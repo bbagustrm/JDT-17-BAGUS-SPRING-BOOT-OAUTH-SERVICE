@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: oauth.service
+  cache:
+    type: redis
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${JDT_DB_HOST}:${JDT_DB_PORT}/${JDT_DB_NAME}
+    username: ${JDT_DB_USERNAME}
+    password: ${JDT_DB_PASSWORD}
+    # ---------------------------------------------------------------------------
+    # HikariCP connection pool (com.zaxxer.hikari.HikariConfig)
+    # Semua timeout dalam milliseconds (ms) kecuali disebutkan lain.
+    # ---------------------------------------------------------------------------
+    hikari:
+
+      # Nama pool untuk identifikasi di log, JMX, dan monitoring.
+      # Berguna saat ada beberapa DataSource dalam satu aplikasi.
+      # @default "HikariPool-{n}" (auto-generated, contoh: "HikariPool-1")
+      pool-name: ${spring.application.name}
+
+      # Properti custom yang diteruskan ke JDBC driver PostgreSQL (bukan properti HikariCP).
+      # ApplicationName tampil di pg_stat_activity / pgAdmin untuk tracing koneksi per aplikasi.
+      # @default {} (kosong, tidak ada ApplicationName)
+      data-source-properties:
+        ApplicationName: ${spring.application.name}
+
+      # Jumlah maksimum koneksi fisik di pool (aktif + idle).
+      # Naikkan jika aplikasi sering menunggu koneksi (pool exhausted).
+      # @default 10
+      # @recommended 10-50 (sesuaikan beban & limit PostgreSQL max_connections)
+      # @env DB_MAX_POOL_SIZE
+      maximum-pool-size: ${DB_MAX_POOL_SIZE:10}
+
+      # Jumlah minimum koneksi idle yang dipertahankan pool.
+      # Pool tidak menurunkan idle di bawah nilai ini (kecuali saat startup).
+      # @default 10 (sama dengan maximum-pool-size)
+      # @env DB_MAX_MINIMUM_IDLE
+      minimum-idle: ${DB_MAX_MINIMUM_IDLE:10}
+
+      # Waktu maksimum menunggu koneksi dari pool sebelum timeout.
+      # Jika pool penuh dan tidak ada koneksi tersedia → exception.
+      # @default 30000 (30 detik)
+      # @env DB_CONNECTION_TIMEOUT
+      connection-timeout: ${DB_CONNECTION_TIMEOUT:30000}
+
+      # Waktu maksimum koneksi boleh idle di pool sebelum ditutup.
+      # Hanya berlaku jika jumlah idle > minimum-idle.
+      # @default 600000 (10 menit)
+      # @env DB_IDLE_TIMEOUT
+      idle-timeout: ${DB_IDLE_TIMEOUT:600000}
+
+      # Umur maksimum koneksi sebelum di-retire dan diganti.
+      # Mencegah koneksi stale / dibatasi firewall atau DB.
+      # @default 1800000 (30 menit)
+      # @env DB_MAX_LIFE_TIME
+      max-lifetime: ${DB_MAX_LIFE_TIME:1800000}
+
+      # Deteksi connection leak: log peringatan jika koneksi dipinjam
+      # lebih lama dari threshold (lupa di-close).
+      # @default 0 (nonaktif)
+      # @recommended 0 di production; 20000 (20 detik) saat debugging
+      # @env DB_DETECTION_THRESHOLD
+      leak-detection-threshold: ${DB_DETECTION_THRESHOLD:0}
+
+      # Waktu maksimum validasi koneksi (connection test) sebelum timeout.
+      # @default 5000 (5 detik)
+      # @env DB_VALIDATION_TIMEOUT
+      validation-timeout: ${DB_VALIDATION_TIMEOUT:5000}
+
+      # Waktu maksimum menunggu inisialisasi pool saat startup.
+      # Jika pool gagal dibuat dalam waktu ini → aplikasi gagal start.
+      # @default 1 (fail fast — gagal hampir segera jika DB tidak reachable)
+      # @values 1 = fail fast | 0 = fail immediately | -1 = never fail | >1 = tunggu N ms
+      # @env DB_INITIALIZATION_FAIL_TIMEOUT
+      initialization-fail-timeout: ${DB_INITIALIZATION_FAIL_TIMEOUT:1}
+server:
+  port: ${OAUTH_SERVICE_PORT:8083}
+
+
+
