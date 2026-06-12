@@ -10,6 +10,7 @@ public class RestApiPath {
 
     public static final String OAUTH_LOGIN_PATH = "/login";
     public static final String OAUTH_PROFILE_PATH = "/profile";
+    public static final String OAUTH_REGISTER_PATH = "/register";
 
     public static final String SERVICE_OAUTH_MAIN = "/api/v1/oauth/**";
 }

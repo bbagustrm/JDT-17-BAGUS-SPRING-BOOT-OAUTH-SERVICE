@@ -16,6 +16,7 @@ import java.util.Locale;
 public enum RestApiError {
 
     ACCOUNT_NOT_FOUND(HttpStatus.BAD_REQUEST.value(), "error.http.account_not_found"),
+    ACCOUNT_ALREADY_EXISTS(HttpStatus.CONFLICT.value(), "error.http.account_already_exists"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED.value(), "error.http.account_not_found"),
     X_API_ACCESS_KEY(HttpStatus.UNAUTHORIZED.value(), "error.http.api_key_not_found"),
     X_AUTH_ACCESS_KEY(HttpStatus.UNAUTHORIZED.value(), "error.http.authorization_not_valid"),
@@ -42,7 +43,7 @@ public enum RestApiError {
 
                     /* GET DATA TRANSLATION */
 
-                    String  translatedMessage = null;
+                    String translatedMessage = null;
 
                     try {
                         translatedMessage = messageSource
@@ -56,9 +57,6 @@ public enum RestApiError {
                         translatedMessage = "DEFAULT ERROR MESSAGE";
                     }
 
-
-
-
                     log.info("TRANSLATED message for key: {}: {}",
                             this.message, translatedMessage
                     );
@@ -69,7 +67,4 @@ public enum RestApiError {
                 }
         );
     }
-
-
-
 }
